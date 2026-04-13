@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Tkxel Universal Assistant - Answer Anything</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #eef2ff 0%, #d9e2f5 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 550px;
+            height: 90vh;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .chat-header {
+            background: #1e3a8a;
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 3px solid #60a5fa;
+        }
+
+        .logo-circle {
+            width: 48px;
+            height: 48px;
+            background: white;
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 22px;
+            color: #1e3a8a;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .logo-circle span {
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+
+        .header-text h2 {
+            color: white;
+            font-size: 1.35rem;
+            font-weight: 600;
+        }
+
+        .header-text p {
+            color: #bfdbfe;
+            font-size: 0.7rem;
+            margin-top: 4px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 18px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #f9faff;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 5px;
+        }
+        .chat-messages::-webkit-scrollbar-track {
+            background: #e2e8f0;
+        }
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 10px;
+        }
+
+        .message {
+            display: flex;
+            max-width: 85%;
+            animation: fadeSlide 0.25s ease-out;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+        }
+
+        .user-message {
+            align-self: flex-end;
+        }
+
+        .bubble {
+            padding: 10px 14px;
+            border-radius: 22px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            word-break: break-word;
+            box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+        }
+
+        .bot-message .bubble {
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-bottom-left-radius: 4px;
+            color: #0f172a;
+        }
+
+        .user-message .bubble {
+            background: #2563eb;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 26px;
+            width: fit-content;
+            border: 1px solid #cbd5e1;
+        }
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: #94a3b8;
+            border-radius: 50%;
+            display: inline-block;
+            animation: blink 1.2s infinite ease-in-out;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes blink {
+            0%, 60%, 100% { transform: scale(0.8); opacity: 0.4; }
+            30% { transform: scale(1.2); opacity: 1; }
+        }
+
+        .chat-input-area {
+            background: white;
+            padding: 12px 16px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: 0.2s;
+            background: #f8fafc;
+        }
+
+        .chat-input-area input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+            background: white;
+        }
+
+        .chat-input-area button {
+            background: #1e3a8a;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .chat-input-area button:hover {
+            background: #2563eb;
+            transform: scale(0.97);
+        }
+
+        .quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 8px 12px;
+            justify-content: center;
+        }
+        .quick-chip {
+            background: #eef2ff;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #1e3a8a;
+            cursor: pointer;
+            transition: 0.1s;
+            border: 1px solid #bfdbfe;
+        }
+        .quick-chip:hover {
+            background: #dbeafe;
+        }
+
+        @keyframes fadeSlide {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 0.65rem;
+            padding: 6px;
+            background: #f1f5f9;
+            color: #475569;
+            border-top: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+<div class="chat-container">
+    <div class="chat-header">
+        <div class="logo-circle">
+            <span>tx</span>
+        </div>
+        <div class="header-text">
+            <h2>Tkxel Universal Assistant 🤖✨</h2>
+            <p>Ask me anything - IT, facts, tips, or just chat</p>
+        </div>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+        <div class="message bot-message">
+            <div class="bubble">
+                👋 Hello! I am Tkxel Universal Assistant.<br>
+                You can ask me ANYTHING:<br>
+                🔹 IT troubleshooting (Internet, Printer, PC slow, Blue screen, etc.)<br>
+                🔹 General knowledge, definitions, tips<br>
+                🔹 Suggestions, calculations, translations<br>
+                Just type your question!
+            </div>
+        </div>
+    </div>
+
+    <div class="quick-actions" id="quickActions">
+        <div class="quick-chip" data-msg="Internet not working">📡 No Internet</div>
+        <div class="quick-chip" data-msg="Printer not working">🖨️ Printer issue</div>
+        <div class="quick-chip" data-msg="My PC is very slow">🐌 Slow PC</div>
+        <div class="quick-chip" data-msg="Blue screen error">💙 Blue screen</div>
+        <div class="quick-chip" data-msg="What is AI?">🤖 What is AI?</div>
+        <div class="quick-chip" data-msg="Tell me a fact about space">🚀 Space fact</div>
+    </div>
+
+    <div class="chat-input-area">
+        <input type="text" id="userInput" placeholder="Ask me anything... (IT, facts, help, etc.)" autocomplete="off">
+        <button id="sendBtn">➤ Send</button>
+    </div>
+    <div class="footer-note">
+        ⚡ Tkxel Support | Answers to everything + IT troubleshooting
+    </div>
+</div>
+
+<script>
+    // ---------- SMART BOT: Answers everything ----------
+    function getBotResponse(userMsg) {
+        let msg = userMsg.toLowerCase().trim();
+
+        // ========== 1. IT TROUBLESHOOTING (DIY) ==========
+        if (msg.includes("internet") || msg.includes("wifi") || msg.includes("network") || msg.includes("connection") || msg.includes("no internet")) {
+            return "🌐 **Internet DIY Fixes:**\n1️⃣ Restart router/modem (unplug 30 sec).\n2️⃣ CMD as admin: `ipconfig /release` then `ipconfig /renew`.\n3️⃣ Forget WiFi and reconnect.\n4️⃣ Run network troubleshooter.\n5️⃣ Contact IT if still down.";
+        }
+        else if (msg.includes("printer") || msg.includes("print") || msg.includes("offline")) {
+            return "🖨️ **Printer fixes:**\n✔️ Turn printer OFF/ON.\n✔️ Clear print queue.\n✔️ Restart Print Spooler (services.msc).\n✔️ Set as default printer.\n✔️ Re-add printer.";
+        }
+        else if (msg.includes("slow") || msg.includes("hang") || msg.includes("freeze") || msg.includes("lag")) {
+            return "🐌 **Speed up PC:**\n🔹 Close unused apps (Task Manager).\n🔹 Delete temp files (`%temp%`).\n🔹 Run Disk Cleanup.\n🔹 Disable startup apps.\n🔹 Scan for malware.";
+        }
+        else if (msg.includes("blue screen") || msg.includes("bsod")) {
+            return "💙 **Blue screen steps:**\n1️⃣ Note stop code.\n2️⃣ Boot Safe Mode (F8).\n3️⃣ Uninstall recent drivers.\n4️⃣ Run `sfc /scannow`.\n5️⃣ Check disk: `chkdsk /f /r`.";
+        }
+        else if (msg.includes("password") || msg.includes("forgot") || msg.includes("reset")) {
+            return "🔐 **Password reset:**\n▪️ Domain user → Contact IT.\n▪️ Local user → Admin account → Control Panel → Reset.\n▪️ No admin → Windows USB → Command Prompt → `net user username newpass`.";
+        }
+        else if (msg.includes("email") || msg.includes("outlook") || msg.includes("mail")) {
+            return "📧 **Email fixes:**\n🔸 Restart Outlook.\n🔸 Verify password.\n🔸 Safe mode: `outlook.exe /safe`.\n🔸 Repair profile.\n🔸 Run SaRA tool.";
+        }
+        else if (msg.includes("keyboard") || msg.includes("keys")) {
+            return "⌨️ **Keyboard fix:**\n✔️ Try different USB port.\n✔️ Device Manager → Uninstall driver → Restart.\n✔️ Turn off Filter Keys.\n✔️ Use on-screen keyboard (OSK).";
+        }
+        else if (msg.includes("sound") || msg.includes("audio") || msg.includes("no sound")) {
+            return "🔊 **Sound fix:**\n🔸 Check mute/volume.\n🔸 Run audio troubleshooter.\n🔸 Set default playback device.\n🔸 Update audio driver.\n🔸 Restart Windows Audio service.";
+        }
+        else if (msg.includes("battery") || msg.includes("charging")) {
+            return "🔋 **Battery fix:**\n1️⃣ Check charger/outlet.\n2️⃣ Remove battery → hold power 30 sec → reinsert.\n3️⃣ Update battery drivers.\n4️⃣ Run power troubleshooter.";
+        }
+        else if (msg.includes("vpn")) {
+            return "🔒 **VPN fix:**\n🔸 Restart VPN client.\n🔸 Flush DNS: `ipconfig /flushdns`.\n🔸 Reinstall VPN adapter.\n🔸 Check server reachability.\n🔸 Contact IT for certs.";
+        }
+        else if (msg.includes("browser") || msg.includes("chrome") || msg.includes("crashes")) {
+            return "🌍 **Browser fix:**\n▪️ Clear cache/cookies.\n▪️ Disable extensions.\n▪️ Reset browser.\n▪️ Update browser.\n▪️ Scan for malware.";
+        }
+
+        // ========== 2. GENERAL KNOWLEDGE & FACTS ==========
+        else if (msg.includes("what is") && msg.includes("ai")) {
+            return "🤖 **AI (Artificial Intelligence)** is the simulation of human intelligence in machines. Examples: ChatGPT, self-driving cars, voice assistants.";
+        }
+        else if (msg.includes("what is") && msg.includes("python")) {
+            return "🐍 **Python** is a popular programming language used for web development, data science, AI, and automation. Easy to learn!";
+        }
+        else if (msg.includes("capital") && msg.includes("pakistan")) {
+            return "🇵🇰 The capital of Pakistan is **Islamabad**.";
+        }
+        else if (msg.includes("capital") && msg.includes("india")) {
+            return "🇮🇳 The capital of India is **New Delhi**.";
+        }
+        else if (msg.includes("space") && msg.includes("fact")) {
+            return "🚀 **Space fact:** One day on Venus is longer than one year on Venus! It takes 243 Earth days to rotate once, but 225 days to orbit the Sun.";
+        }
+        else if (msg.includes("fact") && msg.includes("animal")) {
+            return "🐘 **Animal fact:** An elephant's trunk has over 40,000 muscles (humans have ~600 in the whole body).";
+        }
+        else if (msg.includes("what is") && msg.includes("html")) {
+            return "📄 **HTML** (HyperText Markup Language) is the standard language for creating web pages.";
+        }
+        else if (msg.includes("who is") && (msg.includes("einstein") || msg.includes("albert"))) {
+            return "🧠 **Albert Einstein** was a theoretical physicist who developed the theory of relativity, famously E=mc².";
+        }
+        else if (msg.includes("what is") && msg.includes("quantum")) {
+            return "⚛️ **Quantum physics** is the study of matter and energy at atomic and subatomic levels. Very strange and fascinating!";
+        }
+        else if (msg.includes("tell me") && msg.includes("fact")) {
+            return "📚 Did you know? Honey never spoils. Archaeologists found 3000-year-old honey in Egyptian tombs, still edible!";
+        }
+        else if (msg.includes("how are you") || msg.includes("how r u")) {
+            return "I'm functioning perfectly! Ready to answer your questions 24/7. What can I help you with today?";
+        }
+        else if (msg.includes("hello") || msg.includes("hi") || msg.includes("hey")) {
+            return "Hello! Ask me anything – IT problems, general facts, definitions, or just a fun fact.";
+        }
+        else if (msg.includes("thank")) {
+            return "You're welcome! If you have more questions, I'm always here.";
+        }
+        else if (msg.includes("bye") || msg.includes("goodbye")) {
+            return "Goodbye! Feel free to come back anytime you need help or information.";
+        }
+
+        // ========== 3. FALLBACK: Answer anything with a clever response ==========
+        else {
+            // Try to give a helpful generic answer
+            if (msg.length < 5) {
+                return "Please type a complete question. I can help with IT issues, facts, definitions, or just chat!";
+            }
+            // Check if it's a question
+            if (msg.includes("?")) {
+                return "That's an interesting question! I'm not 100% sure, but for IT issues, try 'Internet not working' or 'Printer offline'. For general knowledge, ask me like 'What is AI?' or 'Tell me a fact about space'.";
+            } else {
+                return "I understand you said: \"" + userMsg + "\". I can help with IT troubleshooting (try 'Internet not working'), or general facts (try 'What is Python?'). Ask me anything!";
+            }
+        }
+    }
+
+    // DOM elements
+    const messagesDiv = document.getElementById('chatMessages');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    function addMessage(text, isUser) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.style.whiteSpace = 'pre-wrap';
+        bubble.innerText = text;
+        msgDiv.appendChild(bubble);
+        messagesDiv.appendChild(msgDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    let typingElement = null;
+    function showTyping() {
+        if (typingElement) return;
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'message bot-message';
+        typingDiv.id = 'typingIndicator';
+        typingDiv.innerHTML = `<div class="typing-indicator"><span></span><span></span><span></span></div>`;
+        messagesDiv.appendChild(typingDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        typingElement = typingDiv;
+    }
+    function hideTyping() {
+        if (typingElement) {
+            typingElement.remove();
+            typingElement = null;
+        }
+    }
+
+    function sendMessage() {
+        let userMsg = userInput.value.trim();
+        if (userMsg === "") return;
+        userInput.value = "";
+        addMessage(userMsg, true);
+        showTyping();
+        setTimeout(() => {
+            const reply = getBotResponse(userMsg);
+            hideTyping();
+            addMessage(reply, false);
+        }, 600);
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+
+    const chips = document.querySelectorAll('.quick-chip');
+    chips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            const preMsg = chip.getAttribute('data-msg');
+            userInput.value = preMsg;
+            sendMessage();
+        });
+    });
+
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+</script>
+</body>
+</html>
