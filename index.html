@@ -3,92 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Tkxel Universal Assistant - Answer Anything</title>
+    <title>Tkxel NOC | Enterprise IT Support</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
+        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap');
+
         body {
-            background: linear-gradient(145deg, #eef2ff 0%, #d9e2f5 100%);
+            background: radial-gradient(circle at 10% 20%, #eef2ff 0%, #cbdff2 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 24px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.03"><path fill="none" stroke="%231e3a8a" stroke-width="0.5" d="M10 10 L90 10 M10 20 L90 20 M10 30 L90 30 M10 40 L90 40 M10 50 L90 50 M10 60 L90 60 M10 70 L90 70 M10 80 L90 80 M10 90 L90 90 M10 10 L10 90 M20 10 L20 90 M30 10 L30 90 M40 10 L40 90 M50 10 L50 90 M60 10 L60 90 M70 10 L70 90 M80 10 L80 90 M90 10 L90 90"/></svg>');
+            background-repeat: repeat;
+            pointer-events: none;
         }
 
         .chat-container {
             width: 100%;
-            max-width: 550px;
+            max-width: 560px;
             height: 90vh;
-            background: white;
-            border-radius: 32px;
-            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.3);
+            min-height: 600px;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(2px);
+            border-radius: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(59, 130, 246, 0.1);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            border: 1px solid rgba(59, 130, 246, 0.2);
         }
 
         .chat-header {
-            background: #1e3a8a;
-            padding: 18px 20px;
+            background: linear-gradient(135deg, #0f2b5c 0%, #1e3a8a 100%);
+            padding: 20px 24px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            border-bottom: 3px solid #60a5fa;
+            gap: 14px;
+            border-bottom: 2px solid rgba(96, 165, 250, 0.5);
         }
 
         .logo-circle {
-            width: 48px;
-            height: 48px;
+            width: 52px;
+            height: 52px;
             background: white;
             border-radius: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 800;
-            font-size: 22px;
+            font-size: 24px;
             color: #1e3a8a;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transition: transform 0.2s;
         }
 
-        .logo-circle span {
-            font-family: monospace;
-            letter-spacing: 1px;
+        .logo-circle:hover {
+            transform: scale(1.02);
         }
 
         .header-text h2 {
             color: white;
-            font-size: 1.35rem;
-            font-weight: 600;
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
         }
 
         .header-text p {
             color: #bfdbfe;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .status-badge {
+            background: rgba(34, 197, 94, 0.2);
+            padding: 4px 8px;
+            border-radius: 40px;
+            font-size: 0.65rem;
+            color: #86efac;
+            display: inline-block;
+            margin-top: 6px;
         }
 
         .chat-messages {
             flex: 1;
             overflow-y: auto;
-            padding: 18px 16px;
+            padding: 20px 18px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            background: #f9faff;
+            gap: 14px;
+            background: #fbfdff;
         }
 
         .chat-messages::-webkit-scrollbar {
             width: 5px;
         }
         .chat-messages::-webkit-scrollbar-track {
-            background: #e2e8f0;
+            background: #eef2ff;
+            border-radius: 10px;
         }
         .chat-messages::-webkit-scrollbar-thumb {
             background: #3b82f6;
@@ -97,8 +126,9 @@
 
         .message {
             display: flex;
-            max-width: 85%;
-            animation: fadeSlide 0.25s ease-out;
+            flex-direction: column;
+            max-width: 88%;
+            animation: fadeSlideUp 0.3s ease;
         }
 
         .bot-message {
@@ -110,41 +140,54 @@
         }
 
         .bubble {
-            padding: 10px 14px;
-            border-radius: 22px;
+            padding: 12px 18px;
+            border-radius: 24px;
             font-size: 0.9rem;
-            line-height: 1.4;
+            line-height: 1.45;
             word-break: break-word;
-            box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
         }
 
         .bot-message .bubble {
-            background: white;
-            border: 1px solid #cbd5e1;
-            border-bottom-left-radius: 4px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-bottom-left-radius: 6px;
             color: #0f172a;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
         }
 
         .user-message .bubble {
-            background: #2563eb;
+            background: linear-gradient(135deg, #2563eb, #1e40af);
             color: white;
-            border-bottom-right-radius: 4px;
+            border-bottom-right-radius: 6px;
+        }
+
+        .timestamp {
+            font-size: 0.6rem;
+            margin-top: 4px;
+            opacity: 0.6;
+            margin-left: 12px;
+        }
+
+        .user-message .timestamp {
+            text-align: right;
+            color: #94a3b8;
         }
 
         .typing-indicator {
             display: flex;
             align-items: center;
             gap: 6px;
-            padding: 8px 12px;
+            padding: 10px 16px;
             background: white;
-            border-radius: 26px;
+            border-radius: 28px;
             width: fit-content;
-            border: 1px solid #cbd5e1;
+            border: 1px solid #e2e8f0;
         }
         .typing-indicator span {
             width: 8px;
             height: 8px;
-            background: #94a3b8;
+            background: #3b82f6;
             border-radius: 50%;
             display: inline-block;
             animation: blink 1.2s infinite ease-in-out;
@@ -153,81 +196,14 @@
         .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
 
         @keyframes blink {
-            0%, 60%, 100% { transform: scale(0.8); opacity: 0.4; }
+            0%, 60%, 100% { transform: scale(0.7); opacity: 0.4; }
             30% { transform: scale(1.2); opacity: 1; }
         }
 
-        .chat-input-area {
-            background: white;
-            padding: 12px 16px;
-            border-top: 1px solid #e2e8f0;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .chat-input-area input {
-            flex: 1;
-            padding: 12px 16px;
-            border: 1px solid #cbd5e1;
-            border-radius: 40px;
-            font-size: 0.9rem;
-            outline: none;
-            transition: 0.2s;
-            background: #f8fafc;
-        }
-
-        .chat-input-area input:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
-            background: white;
-        }
-
-        .chat-input-area button {
-            background: #1e3a8a;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .chat-input-area button:hover {
-            background: #2563eb;
-            transform: scale(0.97);
-        }
-
-        .quick-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin: 8px 12px;
-            justify-content: center;
-        }
-        .quick-chip {
-            background: #eef2ff;
-            padding: 6px 14px;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            font-weight: 500;
-            color: #1e3a8a;
-            cursor: pointer;
-            transition: 0.1s;
-            border: 1px solid #bfdbfe;
-        }
-        .quick-chip:hover {
-            background: #dbeafe;
-        }
-
-        @keyframes fadeSlide {
+        @keyframes fadeSlideUp {
             from {
                 opacity: 0;
-                transform: translateY(8px);
+                transform: translateY(12px);
             }
             to {
                 opacity: 1;
@@ -235,13 +211,119 @@
             }
         }
 
+        .quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 10px 18px 6px 18px;
+            justify-content: center;
+        }
+        .quick-chip {
+            background: rgba(30, 58, 138, 0.06);
+            backdrop-filter: blur(4px);
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #1e3a8a;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        .quick-chip:hover {
+            background: #1e3a8a;
+            color: white;
+            border-color: #1e3a8a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+        }
+
+        .chat-input-area {
+            background: white;
+            padding: 14px 18px;
+            border-top: 1px solid #eef2ff;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 44px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: 0.2s;
+            background: #fafcff;
+        }
+
+        .chat-input-area input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+            background: white;
+        }
+
+        .chat-input-area button {
+            background: #1e3a8a;
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 44px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .chat-input-area button:hover {
+            background: #2563eb;
+            transform: scale(0.97);
+        }
+
         .footer-note {
             text-align: center;
-            font-size: 0.65rem;
-            padding: 6px;
-            background: #f1f5f9;
-            color: #475569;
-            border-top: 1px solid #e2e8f0;
+            font-size: 0.6rem;
+            padding: 8px;
+            background: #f8fafc;
+            color: #5b6e8c;
+            border-top: 1px solid #eef2ff;
+            font-weight: 500;
+        }
+
+        .clear-btn {
+            background: transparent;
+            border: none;
+            color: #bfdbfe;
+            cursor: pointer;
+            font-size: 0.7rem;
+            margin-left: auto;
+            padding: 4px 10px;
+            border-radius: 30px;
+            transition: 0.2s;
+        }
+        .clear-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        @media (max-width: 500px) {
+            .chat-container {
+                height: 95vh;
+                border-radius: 28px;
+            }
+            .bubble {
+                font-size: 0.85rem;
+                padding: 10px 14px;
+            }
+            .quick-chip {
+                font-size: 0.7rem;
+                padding: 6px 12px;
+            }
         }
     </style>
 </head>
@@ -249,148 +331,149 @@
 <div class="chat-container">
     <div class="chat-header">
         <div class="logo-circle">
-            <span>tx</span>
+            <span>🌐</span>
         </div>
         <div class="header-text">
-            <h2>Tkxel Universal Assistant 🤖✨</h2>
-            <p>Ask me anything - IT, facts, tips, or just chat</p>
+            <h2>Tkxel NOC</h2>
+            <p>Network Operations Center · 24/7</p>
+            <div class="status-badge">🟢 Live · 600+ users ready</div>
         </div>
+        <button class="clear-btn" id="clearChatBtn" title="Clear chat history">🗑️ Clear</button>
     </div>
 
     <div class="chat-messages" id="chatMessages">
         <div class="message bot-message">
             <div class="bubble">
-                👋 Hello! I am Tkxel Universal Assistant.<br>
-                You can ask me ANYTHING:<br>
-                🔹 IT troubleshooting (Internet, Printer, PC slow, Blue screen, etc.)<br>
-                🔹 General knowledge, definitions, tips<br>
-                🔹 Suggestions, calculations, translations<br>
-                Just type your question!
+                <strong>🔧 Welcome to Tkxel NOC</strong><br><br>
+                Your central IT support hub. Ask me about:<br>
+                🖥️ <strong>Windows, macOS, Linux</strong><br>
+                🌐 <strong>Networking, VPN, WiFi</strong><br>
+                🖨️ <strong>Printers, Peripherals</strong><br>
+                🔋 <strong>Laptop hardware, Battery, Boot issues</strong><br>
+                📧 <strong>Email, Outlook, Office 365</strong><br><br>
+                Type your issue or use the quick buttons below.
             </div>
+            <div class="timestamp">Just now</div>
         </div>
     </div>
 
     <div class="quick-actions" id="quickActions">
-        <div class="quick-chip" data-msg="Internet not working">📡 No Internet</div>
-        <div class="quick-chip" data-msg="Printer not working">🖨️ Printer issue</div>
-        <div class="quick-chip" data-msg="My PC is very slow">🐌 Slow PC</div>
-        <div class="quick-chip" data-msg="Blue screen error">💙 Blue screen</div>
-        <div class="quick-chip" data-msg="What is AI?">🤖 What is AI?</div>
-        <div class="quick-chip" data-msg="Tell me a fact about space">🚀 Space fact</div>
+        <div class="quick-chip" data-msg="Windows slow performance">🐌 Windows slow</div>
+        <div class="quick-chip" data-msg="Mac won't boot">🍎 Mac boot issue</div>
+        <div class="quick-chip" data-msg="Linux network not working">🐧 Linux network</div>
+        <div class="quick-chip" data-msg="WiFi keeps disconnecting">📡 WiFi drops</div>
+        <div class="quick-chip" data-msg="VPN connection failed">🔒 VPN issue</div>
+        <div class="quick-chip" data-msg="Printer offline">🖨️ Printer offline</div>
+        <div class="quick-chip" data-msg="Laptop battery not charging">🔋 Battery not charging</div>
     </div>
 
     <div class="chat-input-area">
-        <input type="text" id="userInput" placeholder="Ask me anything... (IT, facts, help, etc.)" autocomplete="off">
+        <input type="text" id="userInput" placeholder="Describe your IT issue..." autocomplete="off">
         <button id="sendBtn">➤ Send</button>
     </div>
     <div class="footer-note">
-        ⚡ Tkxel Support | Answers to everything + IT troubleshooting
+        ⚡ Tkxel NOC | Enterprise IT Support · Windows · Mac · Linux · Networking
     </div>
 </div>
 
 <script>
-    // ---------- SMART BOT: Answers everything ----------
+    // ------------------------------
+    // Tkxel NOC Knowledge Base
+    // ------------------------------
     function getBotResponse(userMsg) {
         let msg = userMsg.toLowerCase().trim();
 
-        // ========== 1. IT TROUBLESHOOTING (DIY) ==========
-        if (msg.includes("internet") || msg.includes("wifi") || msg.includes("network") || msg.includes("connection") || msg.includes("no internet")) {
-            return "🌐 **Internet DIY Fixes:**\n1️⃣ Restart router/modem (unplug 30 sec).\n2️⃣ CMD as admin: `ipconfig /release` then `ipconfig /renew`.\n3️⃣ Forget WiFi and reconnect.\n4️⃣ Run network troubleshooter.\n5️⃣ Contact IT if still down.";
+        // ----- WINDOWS -----
+        if (msg.includes("windows") && (msg.includes("slow") || msg.includes("lag") || msg.includes("freeze"))) {
+            return "🪟 **Windows Slow Performance – Fixes:**\n\n1️⃣ Task Manager (Ctrl+Shift+Esc) → End high CPU tasks.\n2️⃣ Disable startup apps: Task Manager → Startup.\n3️⃣ Disk Cleanup → Clean system files.\n4️⃣ Run `sfc /scannow` in CMD admin.\n5️⃣ Update drivers via Device Manager.\n6️⃣ Defrag HDD (not SSD): `defrag C: /O`.";
         }
-        else if (msg.includes("printer") || msg.includes("print") || msg.includes("offline")) {
-            return "🖨️ **Printer fixes:**\n✔️ Turn printer OFF/ON.\n✔️ Clear print queue.\n✔️ Restart Print Spooler (services.msc).\n✔️ Set as default printer.\n✔️ Re-add printer.";
+        else if (msg.includes("windows") && (msg.includes("blue screen") || msg.includes("bsod"))) {
+            return "💙 **Windows BSOD Guide:**\n\n• Note stop code.\n• Boot Safe Mode (F8 / Shift+Restart).\n• Run `sfc /scannow` and `chkdsk C: /f /r`.\n• Uninstall recent drivers/updates.\n• Use System Restore.";
         }
-        else if (msg.includes("slow") || msg.includes("hang") || msg.includes("freeze") || msg.includes("lag")) {
-            return "🐌 **Speed up PC:**\n🔹 Close unused apps (Task Manager).\n🔹 Delete temp files (`%temp%`).\n🔹 Run Disk Cleanup.\n🔹 Disable startup apps.\n🔹 Scan for malware.";
+        else if (msg.includes("windows") && msg.includes("update")) {
+            return "🔄 **Windows Update Stuck:**\n\n1️⃣ Run Windows Update Troubleshooter.\n2️⃣ Stop services: `net stop wuauserv` & `net stop bits`.\n3️⃣ Delete `C:\\Windows\\SoftwareDistribution`.\n4️⃣ Restart services.\n5️⃣ Manual update from Microsoft Catalog.";
         }
-        else if (msg.includes("blue screen") || msg.includes("bsod")) {
-            return "💙 **Blue screen steps:**\n1️⃣ Note stop code.\n2️⃣ Boot Safe Mode (F8).\n3️⃣ Uninstall recent drivers.\n4️⃣ Run `sfc /scannow`.\n5️⃣ Check disk: `chkdsk /f /r`.";
+
+        // ----- macOS -----
+        else if (msg.includes("mac") || msg.includes("macos") || msg.includes("macbook")) {
+            if (msg.includes("slow") || msg.includes("lag")) {
+                return "🍎 **macOS Performance:**\n\n• Close unused apps.\n• Check Activity Monitor.\n• Clear cache: `~/Library/Caches`.\n• Update macOS.\n• Reset NVRAM (Cmd+Option+P+R).\n• Rebuild Spotlight index.";
+            } else if (msg.includes("boot") || msg.includes("won't start")) {
+                return "🍎 **Mac Won't Boot:**\n\n1️⃣ Safe Boot (Shift key).\n2️⃣ Reset SMC (T2: hold power 10 sec).\n3️⃣ Disk Utility → First Aid.\n4️⃣ Reinstall macOS (Recovery mode).\n5️⃣ Apple Diagnostics (D key).";
+            } else if (msg.includes("wifi") || msg.includes("network")) {
+                return "🍎 **Mac Network Fix:**\n\n• Renew DHCP lease.\n• Delete `com.apple.airport.preferences.plist` → reboot.\n• Flush DNS: `sudo dscacheutil -flushcache`.\n• Reset network config.";
+            } else {
+                return "🍎 **macOS Tips:** Keep updated, check storage, run First Aid monthly. Describe specific issue for more help.";
+            }
         }
-        else if (msg.includes("password") || msg.includes("forgot") || msg.includes("reset")) {
-            return "🔐 **Password reset:**\n▪️ Domain user → Contact IT.\n▪️ Local user → Admin account → Control Panel → Reset.\n▪️ No admin → Windows USB → Command Prompt → `net user username newpass`.";
+
+        // ----- LINUX -----
+        else if (msg.includes("linux") || msg.includes("ubuntu") || msg.includes("fedora") || msg.includes("debian")) {
+            if (msg.includes("network") || msg.includes("wifi")) {
+                return "🐧 **Linux Network:**\n\n1️⃣ `ip a` or `ifconfig`.\n2️⃣ `sudo systemctl restart NetworkManager`.\n3️⃣ `nmcli device wifi list`.\n4️⃣ `nmcli device wifi connect 'SSID' password 'pass'`.\n5️⃣ Check DNS: `cat /etc/resolv.conf`.";
+            } else if (msg.includes("slow")) {
+                return "🐧 **Linux Performance:**\n\n• `htop` to check usage.\n• `sudo apt clean` or `dnf clean all`.\n• Disable unnecessary services.\n• Use lightweight desktop.\n• Increase swap if needed.";
+            } else if (msg.includes("boot") || msg.includes("grub")) {
+                return "🐧 **Linux Boot Issues:**\n\n1️⃣ Boot Live USB → chroot.\n2️⃣ Reinstall GRUB: `sudo grub-install /dev/sda`.\n3️⃣ Check `fstab` for UUID errors.\n4️⃣ `sudo fsck /dev/sda1`.\n5️⃣ Reinstall kernel.";
+            } else {
+                return "🐧 **Linux Support:** Update system (`sudo apt update && upgrade`), check logs (`journalctl -xe`), install drivers (`ubuntu-drivers autoinstall`). Need specific distro?";
+            }
         }
-        else if (msg.includes("email") || msg.includes("outlook") || msg.includes("mail")) {
-            return "📧 **Email fixes:**\n🔸 Restart Outlook.\n🔸 Verify password.\n🔸 Safe mode: `outlook.exe /safe`.\n🔸 Repair profile.\n🔸 Run SaRA tool.";
-        }
-        else if (msg.includes("keyboard") || msg.includes("keys")) {
-            return "⌨️ **Keyboard fix:**\n✔️ Try different USB port.\n✔️ Device Manager → Uninstall driver → Restart.\n✔️ Turn off Filter Keys.\n✔️ Use on-screen keyboard (OSK).";
-        }
-        else if (msg.includes("sound") || msg.includes("audio") || msg.includes("no sound")) {
-            return "🔊 **Sound fix:**\n🔸 Check mute/volume.\n🔸 Run audio troubleshooter.\n🔸 Set default playback device.\n🔸 Update audio driver.\n🔸 Restart Windows Audio service.";
-        }
-        else if (msg.includes("battery") || msg.includes("charging")) {
-            return "🔋 **Battery fix:**\n1️⃣ Check charger/outlet.\n2️⃣ Remove battery → hold power 30 sec → reinsert.\n3️⃣ Update battery drivers.\n4️⃣ Run power troubleshooter.";
+
+        // ----- NETWORKING / VPN / WIFI -----
+        else if (msg.includes("wifi") || msg.includes("internet") || msg.includes("network") || msg.includes("ethernet")) {
+            if (msg.includes("disconnect") || msg.includes("drop")) {
+                return "📡 **WiFi Drops Fix:**\n\n1️⃣ Update WiFi driver.\n2️⃣ Power Management: Disable 'Allow computer to turn off'.\n3️⃣ Router: Change channel (1,6,11).\n4️⃣ Forget & reconnect.\n5️⃣ Reset TCP/IP: `netsh int ip reset` (Windows).\n6️⃣ macOS: Renew DHCP lease.\n7️⃣ Linux: `iwconfig power off`.";
+            } else if (msg.includes("no internet")) {
+                return "🌐 **Connected but no internet?**\n\n• Flush DNS: `ipconfig /flushdns`.\n• Renew IP: `ipconfig /release` & `/renew`.\n• Change DNS to 8.8.8.8.\n• Reset winsock: `netsh winsock reset`.\n• Disable IPv6.\n• Restart router.";
+            } else {
+                return "🌐 **General Network:** Restart router, check cables, run troubleshooter, update drivers. Ping test: `ping 8.8.8.8`.";
+            }
         }
         else if (msg.includes("vpn")) {
-            return "🔒 **VPN fix:**\n🔸 Restart VPN client.\n🔸 Flush DNS: `ipconfig /flushdns`.\n🔸 Reinstall VPN adapter.\n🔸 Check server reachability.\n🔸 Contact IT for certs.";
-        }
-        else if (msg.includes("browser") || msg.includes("chrome") || msg.includes("crashes")) {
-            return "🌍 **Browser fix:**\n▪️ Clear cache/cookies.\n▪️ Disable extensions.\n▪️ Reset browser.\n▪️ Update browser.\n▪️ Scan for malware.";
+            return "🔒 **VPN Issues:**\n\n1️⃣ Check base internet.\n2️⃣ Restart VPN client.\n3️⃣ Flush DNS.\n4️⃣ Reinstall VPN adapter.\n5️⃣ Disable IPv6 on VPN.\n6️⃣ Verify credentials/certificate.";
         }
 
-        // ========== 2. GENERAL KNOWLEDGE & FACTS ==========
-        else if (msg.includes("what is") && msg.includes("ai")) {
-            return "🤖 **AI (Artificial Intelligence)** is the simulation of human intelligence in machines. Examples: ChatGPT, self-driving cars, voice assistants.";
+        // ----- PRINTERS -----
+        else if (msg.includes("printer")) {
+            return "🖨️ **Printer Fixes (All OS):**\n\n• Power cycle printer.\n• Clear print queue.\n• Restart Print Spooler (Windows) / CUPS (Linux/Mac).\n• Remove & re-add printer.\n• Check paper/toner.\n• Run manufacturer diagnostic.";
         }
-        else if (msg.includes("what is") && msg.includes("python")) {
-            return "🐍 **Python** is a popular programming language used for web development, data science, AI, and automation. Easy to learn!";
+
+        // ----- LAPTOP HARDWARE -----
+        else if (msg.includes("battery") || msg.includes("charging")) {
+            return "🔋 **Battery Not Charging:**\n\n1️⃣ Check charger/outlet.\n2️⃣ Remove battery → hold power 30 sec → reinsert.\n3️⃣ Update battery drivers (Windows: Device Manager → Batteries → Uninstall → Restart).\n4️⃣ Reset SMC (Mac).\n5️⃣ Check for swollen battery – replace immediately.\n6️⃣ Calibrate battery.";
         }
-        else if (msg.includes("capital") && msg.includes("pakistan")) {
-            return "🇵🇰 The capital of Pakistan is **Islamabad**.";
+        else if (msg.includes("keyboard")) {
+            return "⌨️ **Keyboard Issues:**\n\n• USB: try different port.\n• Laptop: clean with compressed air.\n• Windows: Device Manager → Uninstall driver → Restart.\n• macOS: Reset NVRAM.\n• Linux: `xinput list`.\n• Turn off Filter Keys.\n• Use on-screen keyboard (OSK).";
         }
-        else if (msg.includes("capital") && msg.includes("india")) {
-            return "🇮🇳 The capital of India is **New Delhi**.";
+        else if (msg.includes("trackpad") || msg.includes("touchpad") || msg.includes("mouse")) {
+            return "🖱️ **Touchpad/Mouse Fix:**\n\n• Check Fn key toggle.\n• Windows: Settings → Touchpad → ON.\n• Update drivers.\n• macOS: System Settings → Trackpad.\n• Linux: `xinput enable`.\n• Clean sensor.\n• Bluetooth: re-pair.";
         }
-        else if (msg.includes("space") && msg.includes("fact")) {
-            return "🚀 **Space fact:** One day on Venus is longer than one year on Venus! It takes 243 Earth days to rotate once, but 225 days to orbit the Sun.";
+
+        // ----- EMAIL -----
+        else if (msg.includes("email") || msg.includes("outlook")) {
+            return "📧 **Outlook/Email Fixes:**\n\n🔸 Restart Outlook.\n🔸 Verify password (webmail).\n🔸 Safe mode: `outlook.exe /safe`.\n🔸 Repair profile (Control Panel → Mail).\n🔸 Run SaRA tool.\n🔸 Check OST corruption: `scanpst.exe`.";
         }
-        else if (msg.includes("fact") && msg.includes("animal")) {
-            return "🐘 **Animal fact:** An elephant's trunk has over 40,000 muscles (humans have ~600 in the whole body).";
-        }
-        else if (msg.includes("what is") && msg.includes("html")) {
-            return "📄 **HTML** (HyperText Markup Language) is the standard language for creating web pages.";
-        }
-        else if (msg.includes("who is") && (msg.includes("einstein") || msg.includes("albert"))) {
-            return "🧠 **Albert Einstein** was a theoretical physicist who developed the theory of relativity, famously E=mc².";
-        }
-        else if (msg.includes("what is") && msg.includes("quantum")) {
-            return "⚛️ **Quantum physics** is the study of matter and energy at atomic and subatomic levels. Very strange and fascinating!";
-        }
-        else if (msg.includes("tell me") && msg.includes("fact")) {
-            return "📚 Did you know? Honey never spoils. Archaeologists found 3000-year-old honey in Egyptian tombs, still edible!";
-        }
-        else if (msg.includes("how are you") || msg.includes("how r u")) {
-            return "I'm functioning perfectly! Ready to answer your questions 24/7. What can I help you with today?";
-        }
+
+        // ----- GREETINGS & FALLBACK -----
         else if (msg.includes("hello") || msg.includes("hi") || msg.includes("hey")) {
-            return "Hello! Ask me anything – IT problems, general facts, definitions, or just a fun fact.";
+            return "Hello! Tkxel NOC at your service. Please describe your IT issue (Windows/Mac/Linux/Network/Hardware).";
         }
         else if (msg.includes("thank")) {
-            return "You're welcome! If you have more questions, I'm always here.";
+            return "You're welcome! If the issue persists, escalate to IT desk. I'm here 24/7.";
         }
-        else if (msg.includes("bye") || msg.includes("goodbye")) {
-            return "Goodbye! Feel free to come back anytime you need help or information.";
-        }
-
-        // ========== 3. FALLBACK: Answer anything with a clever response ==========
         else {
-            // Try to give a helpful generic answer
-            if (msg.length < 5) {
-                return "Please type a complete question. I can help with IT issues, facts, definitions, or just chat!";
-            }
-            // Check if it's a question
-            if (msg.includes("?")) {
-                return "That's an interesting question! I'm not 100% sure, but for IT issues, try 'Internet not working' or 'Printer offline'. For general knowledge, ask me like 'What is AI?' or 'Tell me a fact about space'.";
-            } else {
-                return "I understand you said: \"" + userMsg + "\". I can help with IT troubleshooting (try 'Internet not working'), or general facts (try 'What is Python?'). Ask me anything!";
-            }
+            return "❓ Please specify your operating system (Windows/macOS/Linux) and issue (e.g., 'slow', 'network', 'boot', 'printer', 'battery'). Example: 'Windows laptop slow' or 'MacBook WiFi drops'.";
         }
     }
 
-    // DOM elements
+    // -------------------------------
+    // UI Logic (same as before)
+    // -------------------------------
     const messagesDiv = document.getElementById('chatMessages');
     const userInput = document.getElementById('userInput');
     const sendBtn = document.getElementById('sendBtn');
+    const clearBtn = document.getElementById('clearChatBtn');
 
     function addMessage(text, isUser) {
         const msgDiv = document.createElement('div');
@@ -400,39 +483,43 @@
         bubble.style.whiteSpace = 'pre-wrap';
         bubble.innerText = text;
         msgDiv.appendChild(bubble);
+        const timeSpan = document.createElement('div');
+        timeSpan.className = 'timestamp';
+        timeSpan.innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' });
+        msgDiv.appendChild(timeSpan);
         messagesDiv.appendChild(msgDiv);
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
 
-    let typingElement = null;
+    let typingIndicator = null;
     function showTyping() {
-        if (typingElement) return;
-        const typingDiv = document.createElement('div');
-        typingDiv.className = 'message bot-message';
-        typingDiv.id = 'typingIndicator';
-        typingDiv.innerHTML = `<div class="typing-indicator"><span></span><span></span><span></span></div>`;
-        messagesDiv.appendChild(typingDiv);
+        if (typingIndicator) return;
+        const div = document.createElement('div');
+        div.className = 'message bot-message';
+        div.id = 'typingIndicator';
+        div.innerHTML = `<div class="typing-indicator"><span></span><span></span><span></span></div>`;
+        messagesDiv.appendChild(div);
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        typingElement = typingDiv;
+        typingIndicator = div;
     }
     function hideTyping() {
-        if (typingElement) {
-            typingElement.remove();
-            typingElement = null;
+        if (typingIndicator) {
+            typingIndicator.remove();
+            typingIndicator = null;
         }
     }
 
     function sendMessage() {
         let userMsg = userInput.value.trim();
-        if (userMsg === "") return;
-        userInput.value = "";
+        if (!userMsg) return;
+        userInput.value = '';
         addMessage(userMsg, true);
         showTyping();
         setTimeout(() => {
             const reply = getBotResponse(userMsg);
             hideTyping();
             addMessage(reply, false);
-        }, 600);
+        }, 700);
     }
 
     sendBtn.addEventListener('click', sendMessage);
@@ -440,13 +527,20 @@
         if (e.key === 'Enter') sendMessage();
     });
 
-    const chips = document.querySelectorAll('.quick-chip');
-    chips.forEach(chip => {
+    document.querySelectorAll('.quick-chip').forEach(chip => {
         chip.addEventListener('click', () => {
             const preMsg = chip.getAttribute('data-msg');
             userInput.value = preMsg;
             sendMessage();
         });
+    });
+
+    clearBtn.addEventListener('click', () => {
+        messagesDiv.innerHTML = '';
+        const welcomeDiv = document.createElement('div');
+        welcomeDiv.className = 'message bot-message';
+        welcomeDiv.innerHTML = `<div class="bubble"><strong>🧹 Chat cleared. Tkxel NOC is still ready to help!</strong><br><br>Ask me about Windows, Mac, Linux, network, printers, or hardware.</div><div class="timestamp">Just now</div>`;
+        messagesDiv.appendChild(welcomeDiv);
     });
 
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
