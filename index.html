@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Tkxel NOC | Enterprise IT Support</title>
+    <title>Tkxel NOC | Smart Diagnostic Assistant</title>
     <style>
         * {
             margin: 0;
@@ -12,7 +12,7 @@
             font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
-        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap');
 
         body {
             background: radial-gradient(circle at 10% 20%, #eef2ff 0%, #cbdff2 100%);
@@ -38,7 +38,7 @@
 
         .chat-container {
             width: 100%;
-            max-width: 560px;
+            max-width: 600px;
             height: 90vh;
             min-height: 600px;
             background: rgba(255, 255, 255, 0.96);
@@ -71,11 +71,6 @@
             font-size: 24px;
             color: #1e3a8a;
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            transition: transform 0.2s;
-        }
-
-        .logo-circle:hover {
-            transform: scale(1.02);
         }
 
         .header-text h2 {
@@ -92,7 +87,21 @@
             font-weight: 500;
         }
 
-        /* Removed status-badge styles since badge is gone */
+        .clear-btn {
+            background: transparent;
+            border: none;
+            color: #bfdbfe;
+            cursor: pointer;
+            font-size: 0.7rem;
+            margin-left: auto;
+            padding: 4px 10px;
+            border-radius: 30px;
+            transition: 0.2s;
+        }
+        .clear-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
 
         .chat-messages {
             flex: 1;
@@ -145,7 +154,6 @@
             border: 1px solid #e2e8f0;
             border-bottom-left-radius: 6px;
             color: #0f172a;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
         }
 
         .user-message .bubble {
@@ -201,33 +209,6 @@
                 opacity: 1;
                 transform: translateY(0);
             }
-        }
-
-        .quick-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 10px 18px 6px 18px;
-            justify-content: center;
-        }
-        .quick-chip {
-            background: rgba(30, 58, 138, 0.06);
-            backdrop-filter: blur(4px);
-            padding: 8px 16px;
-            border-radius: 40px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #1e3a8a;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid rgba(59, 130, 246, 0.3);
-        }
-        .quick-chip:hover {
-            background: #1e3a8a;
-            color: white;
-            border-color: #1e3a8a;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.08);
         }
 
         .chat-input-area {
@@ -287,22 +268,6 @@
             font-weight: 500;
         }
 
-        .clear-btn {
-            background: transparent;
-            border: none;
-            color: #bfdbfe;
-            cursor: pointer;
-            font-size: 0.7rem;
-            margin-left: auto;
-            padding: 4px 10px;
-            border-radius: 30px;
-            transition: 0.2s;
-        }
-        .clear-btn:hover {
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
-
         @media (max-width: 500px) {
             .chat-container {
                 height: 95vh;
@@ -312,10 +277,6 @@
                 font-size: 0.85rem;
                 padding: 10px 14px;
             }
-            .quick-chip {
-                font-size: 0.7rem;
-                padding: 6px 12px;
-            }
         }
     </style>
 </head>
@@ -323,144 +284,48 @@
 <div class="chat-container">
     <div class="chat-header">
         <div class="logo-circle">
-            <span>🌐</span>
+            <span>🔍</span>
         </div>
         <div class="header-text">
             <h2>Tkxel NOC</h2>
-            <p>Network Operations Center · 24/7</p>
+            <p>Smart Diagnostic Assistant</p>
         </div>
-        <button class="clear-btn" id="clearChatBtn" title="Clear chat history">🗑️ Clear</button>
+        <button class="clear-btn" id="clearChatBtn" title="Reset conversation">⟳ Reset</button>
     </div>
 
     <div class="chat-messages" id="chatMessages">
         <div class="message bot-message">
             <div class="bubble">
-                <strong>🔧 Welcome to Tkxel NOC</strong><br><br>
-                Your central IT support hub. Ask me about:<br>
-                🖥️ <strong>Windows, macOS, Linux</strong><br>
-                🌐 <strong>Networking, VPN, WiFi</strong><br>
-                🖨️ <strong>Printers, Peripherals</strong><br>
-                🔋 <strong>Laptop hardware, Battery, Boot issues</strong><br>
-                📧 <strong>Email, Outlook, Office 365</strong><br><br>
-                Type your issue or use the quick buttons below.
+                <strong>🔧 Welcome to Tkxel NOC Diagnostic System</strong><br><br>
+                I will guide you step by step to resolve your IT issue.<br>
+                Please describe your problem (e.g., "Internet not working", "Laptop slow", "Printer offline", "Software crash").<br><br>
+                Let's start. What issue are you facing?
             </div>
             <div class="timestamp">Just now</div>
         </div>
     </div>
 
-    <div class="quick-actions" id="quickActions">
-        <div class="quick-chip" data-msg="Windows slow performance">🐌 Windows slow</div>
-        <div class="quick-chip" data-msg="Mac won't boot">🍎 Mac boot issue</div>
-        <div class="quick-chip" data-msg="Linux network not working">🐧 Linux network</div>
-        <div class="quick-chip" data-msg="WiFi keeps disconnecting">📡 WiFi drops</div>
-        <div class="quick-chip" data-msg="VPN connection failed">🔒 VPN issue</div>
-        <div class="quick-chip" data-msg="Printer offline">🖨️ Printer offline</div>
-        <div class="quick-chip" data-msg="Laptop battery not charging">🔋 Battery not charging</div>
-    </div>
-
     <div class="chat-input-area">
-        <input type="text" id="userInput" placeholder="Describe your IT issue..." autocomplete="off">
+        <input type="text" id="userInput" placeholder="Type your response here..." autocomplete="off">
         <button id="sendBtn">➤ Send</button>
     </div>
     <div class="footer-note">
-        ⚡ Tkxel NOC | Enterprise IT Support · Windows · Mac · Linux · Networking
+        ⚡ Tkxel NOC | Guided Troubleshooting · Network · Hardware · Software
     </div>
 </div>
 
 <script>
     // ------------------------------
-    // Tkxel NOC Knowledge Base
+    // STATE MANAGEMENT (per conversation)
     // ------------------------------
-    function getBotResponse(userMsg) {
-        let msg = userMsg.toLowerCase().trim();
+    let state = {
+        step: "initial",           // current diagnostic step
+        category: null,           // network, hardware, software, user-support
+        subCategory: null,        // e.g., no-internet, slow, printer, battery, etc.
+        diagnosticData: {}        // store answers like pingResult, etc.
+    };
 
-        // ----- WINDOWS -----
-        if (msg.includes("windows") && (msg.includes("slow") || msg.includes("lag") || msg.includes("freeze"))) {
-            return "🪟 **Windows Slow Performance – Fixes:**\n\n1️⃣ Task Manager (Ctrl+Shift+Esc) → End high CPU tasks.\n2️⃣ Disable startup apps: Task Manager → Startup.\n3️⃣ Disk Cleanup → Clean system files.\n4️⃣ Run `sfc /scannow` in CMD admin.\n5️⃣ Update drivers via Device Manager.\n6️⃣ Defrag HDD (not SSD): `defrag C: /O`.";
-        }
-        else if (msg.includes("windows") && (msg.includes("blue screen") || msg.includes("bsod"))) {
-            return "💙 **Windows BSOD Guide:**\n\n• Note stop code.\n• Boot Safe Mode (F8 / Shift+Restart).\n• Run `sfc /scannow` and `chkdsk C: /f /r`.\n• Uninstall recent drivers/updates.\n• Use System Restore.";
-        }
-        else if (msg.includes("windows") && msg.includes("update")) {
-            return "🔄 **Windows Update Stuck:**\n\n1️⃣ Run Windows Update Troubleshooter.\n2️⃣ Stop services: `net stop wuauserv` & `net stop bits`.\n3️⃣ Delete `C:\\Windows\\SoftwareDistribution`.\n4️⃣ Restart services.\n5️⃣ Manual update from Microsoft Catalog.";
-        }
-
-        // ----- macOS -----
-        else if (msg.includes("mac") || msg.includes("macos") || msg.includes("macbook")) {
-            if (msg.includes("slow") || msg.includes("lag")) {
-                return "🍎 **macOS Performance:**\n\n• Close unused apps.\n• Check Activity Monitor.\n• Clear cache: `~/Library/Caches`.\n• Update macOS.\n• Reset NVRAM (Cmd+Option+P+R).\n• Rebuild Spotlight index.";
-            } else if (msg.includes("boot") || msg.includes("won't start")) {
-                return "🍎 **Mac Won't Boot:**\n\n1️⃣ Safe Boot (Shift key).\n2️⃣ Reset SMC (T2: hold power 10 sec).\n3️⃣ Disk Utility → First Aid.\n4️⃣ Reinstall macOS (Recovery mode).\n5️⃣ Apple Diagnostics (D key).";
-            } else if (msg.includes("wifi") || msg.includes("network")) {
-                return "🍎 **Mac Network Fix:**\n\n• Renew DHCP lease.\n• Delete `com.apple.airport.preferences.plist` → reboot.\n• Flush DNS: `sudo dscacheutil -flushcache`.\n• Reset network config.";
-            } else {
-                return "🍎 **macOS Tips:** Keep updated, check storage, run First Aid monthly. Describe specific issue for more help.";
-            }
-        }
-
-        // ----- LINUX -----
-        else if (msg.includes("linux") || msg.includes("ubuntu") || msg.includes("fedora") || msg.includes("debian")) {
-            if (msg.includes("network") || msg.includes("wifi")) {
-                return "🐧 **Linux Network:**\n\n1️⃣ `ip a` or `ifconfig`.\n2️⃣ `sudo systemctl restart NetworkManager`.\n3️⃣ `nmcli device wifi list`.\n4️⃣ `nmcli device wifi connect 'SSID' password 'pass'`.\n5️⃣ Check DNS: `cat /etc/resolv.conf`.";
-            } else if (msg.includes("slow")) {
-                return "🐧 **Linux Performance:**\n\n• `htop` to check usage.\n• `sudo apt clean` or `dnf clean all`.\n• Disable unnecessary services.\n• Use lightweight desktop.\n• Increase swap if needed.";
-            } else if (msg.includes("boot") || msg.includes("grub")) {
-                return "🐧 **Linux Boot Issues:**\n\n1️⃣ Boot Live USB → chroot.\n2️⃣ Reinstall GRUB: `sudo grub-install /dev/sda`.\n3️⃣ Check `fstab` for UUID errors.\n4️⃣ `sudo fsck /dev/sda1`.\n5️⃣ Reinstall kernel.";
-            } else {
-                return "🐧 **Linux Support:** Update system (`sudo apt update && upgrade`), check logs (`journalctl -xe`), install drivers (`ubuntu-drivers autoinstall`). Need specific distro?";
-            }
-        }
-
-        // ----- NETWORKING / VPN / WIFI -----
-        else if (msg.includes("wifi") || msg.includes("internet") || msg.includes("network") || msg.includes("ethernet")) {
-            if (msg.includes("disconnect") || msg.includes("drop")) {
-                return "📡 **WiFi Drops Fix:**\n\n1️⃣ Update WiFi driver.\n2️⃣ Power Management: Disable 'Allow computer to turn off'.\n3️⃣ Router: Change channel (1,6,11).\n4️⃣ Forget & reconnect.\n5️⃣ Reset TCP/IP: `netsh int ip reset` (Windows).\n6️⃣ macOS: Renew DHCP lease.\n7️⃣ Linux: `iwconfig power off`.";
-            } else if (msg.includes("no internet")) {
-                return "🌐 **Connected but no internet?**\n\n• Flush DNS: `ipconfig /flushdns`.\n• Renew IP: `ipconfig /release` & `/renew`.\n• Change DNS to 8.8.8.8.\n• Reset winsock: `netsh winsock reset`.\n• Disable IPv6.\n• Restart router.";
-            } else {
-                return "🌐 **General Network:** Restart router, check cables, run troubleshooter, update drivers. Ping test: `ping 8.8.8.8`.";
-            }
-        }
-        else if (msg.includes("vpn")) {
-            return "🔒 **VPN Issues:**\n\n1️⃣ Check base internet.\n2️⃣ Restart VPN client.\n3️⃣ Flush DNS.\n4️⃣ Reinstall VPN adapter.\n5️⃣ Disable IPv6 on VPN.\n6️⃣ Verify credentials/certificate.";
-        }
-
-        // ----- PRINTERS -----
-        else if (msg.includes("printer")) {
-            return "🖨️ **Printer Fixes (All OS):**\n\n• Power cycle printer.\n• Clear print queue.\n• Restart Print Spooler (Windows) / CUPS (Linux/Mac).\n• Remove & re-add printer.\n• Check paper/toner.\n• Run manufacturer diagnostic.";
-        }
-
-        // ----- LAPTOP HARDWARE -----
-        else if (msg.includes("battery") || msg.includes("charging")) {
-            return "🔋 **Battery Not Charging:**\n\n1️⃣ Check charger/outlet.\n2️⃣ Remove battery → hold power 30 sec → reinsert.\n3️⃣ Update battery drivers (Windows: Device Manager → Batteries → Uninstall → Restart).\n4️⃣ Reset SMC (Mac).\n5️⃣ Check for swollen battery – replace immediately.\n6️⃣ Calibrate battery.";
-        }
-        else if (msg.includes("keyboard")) {
-            return "⌨️ **Keyboard Issues:**\n\n• USB: try different port.\n• Laptop: clean with compressed air.\n• Windows: Device Manager → Uninstall driver → Restart.\n• macOS: Reset NVRAM.\n• Linux: `xinput list`.\n• Turn off Filter Keys.\n• Use on-screen keyboard (OSK).";
-        }
-        else if (msg.includes("trackpad") || msg.includes("touchpad") || msg.includes("mouse")) {
-            return "🖱️ **Touchpad/Mouse Fix:**\n\n• Check Fn key toggle.\n• Windows: Settings → Touchpad → ON.\n• Update drivers.\n• macOS: System Settings → Trackpad.\n• Linux: `xinput enable`.\n• Clean sensor.\n• Bluetooth: re-pair.";
-        }
-
-        // ----- EMAIL -----
-        else if (msg.includes("email") || msg.includes("outlook")) {
-            return "📧 **Outlook/Email Fixes:**\n\n🔸 Restart Outlook.\n🔸 Verify password (webmail).\n🔸 Safe mode: `outlook.exe /safe`.\n🔸 Repair profile (Control Panel → Mail).\n🔸 Run SaRA tool.\n🔸 Check OST corruption: `scanpst.exe`.";
-        }
-
-        // ----- GREETINGS & FALLBACK -----
-        else if (msg.includes("hello") || msg.includes("hi") || msg.includes("hey")) {
-            return "Hello! Tkxel NOC at your service. Please describe your IT issue (Windows/Mac/Linux/Network/Hardware).";
-        }
-        else if (msg.includes("thank")) {
-            return "You're welcome! If the issue persists, escalate to IT desk. I'm here 24/7.";
-        }
-        else {
-            return "❓ Please specify your operating system (Windows/macOS/Linux) and issue (e.g., 'slow', 'network', 'boot', 'printer', 'battery'). Example: 'Windows laptop slow' or 'MacBook WiFi drops'.";
-        }
-    }
-
-    // -------------------------------
-    // UI Logic
-    // -------------------------------
+    // Helper to add message to chat
     const messagesDiv = document.getElementById('chatMessages');
     const userInput = document.getElementById('userInput');
     const sendBtn = document.getElementById('sendBtn');
@@ -500,41 +365,351 @@
         }
     }
 
-    function sendMessage() {
+    // Send bot message after typing delay
+    function botSend(text) {
+        showTyping();
+        setTimeout(() => {
+            hideTyping();
+            addMessage(text, false);
+        }, 500);
+    }
+
+    // Classification logic based on user's initial message
+    function classifyIssue(userMsg) {
+        const msg = userMsg.toLowerCase();
+        if (msg.includes("internet") || msg.includes("wifi") || msg.includes("network") || msg.includes("connection") || msg.includes("ethernet") || msg.includes("no internet") || msg.includes("online") || msg.includes("ping")) {
+            return { category: "network", subCategory: "connectivity" };
+        }
+        else if (msg.includes("slow") || msg.includes("lag") || msg.includes("freeze") || msg.includes("hang") || msg.includes("performance")) {
+            return { category: "hardware", subCategory: "slow-performance" };
+        }
+        else if (msg.includes("printer") || msg.includes("print") || msg.includes("scan")) {
+            return { category: "hardware", subCategory: "printer" };
+        }
+        else if (msg.includes("battery") || msg.includes("charging") || msg.includes("power") || msg.includes("adapter")) {
+            return { category: "hardware", subCategory: "battery" };
+        }
+        else if (msg.includes("keyboard") || msg.includes("mouse") || msg.includes("touchpad") || msg.includes("trackpad")) {
+            return { category: "hardware", subCategory: "peripheral" };
+        }
+        else if (msg.includes("software") || msg.includes("app") || msg.includes("program") || msg.includes("crash") || msg.includes("error") || msg.includes("outlook") || msg.includes("email") || msg.includes("office") || msg.includes("browser")) {
+            return { category: "software", subCategory: "app-crash" };
+        }
+        else if (msg.includes("password") || msg.includes("login") || msg.includes("account") || msg.includes("access") || msg.includes("permission") || msg.includes("user")) {
+            return { category: "user-support", subCategory: "access" };
+        }
+        else {
+            return { category: "general", subCategory: "unknown" };
+        }
+    }
+
+    // Main diagnostic engine
+    function processDiagnostic(userMsg) {
+        const msg = userMsg.toLowerCase().trim();
+
+        // STEP 1: Initial classification
+        if (state.step === "initial") {
+            const classification = classifyIssue(userMsg);
+            state.category = classification.category;
+            state.subCategory = classification.subCategory;
+            state.step = "diagnosing";
+
+            if (state.category === "network") {
+                botSend("🔍 I see this is a **network/connectivity** issue. Let's diagnose step by step.\n\n**Step 1:** Please open Command Prompt (CMD) on your computer.\n- Press `Windows + R`, type `cmd`, press Enter.\n- Type the following command and press Enter:\n`ping 8.8.8.8`\n\n👉 **Does the ping succeed?** (Reply 'yes' if you see replies, 'no' if you see 'Request timed out' or 'Destination unreachable')");
+                state.diagnosticData = { step: "ping_test" };
+            }
+            else if (state.category === "hardware") {
+                if (state.subCategory === "slow-performance") {
+                    botSend("🐌 **Slow Performance Diagnosis**\n\n**Step 1:** Open Task Manager (Ctrl+Shift+Esc).\n- Check CPU and Memory usage.\n- Is any program using more than 80% CPU or Memory?\n\n👉 Reply 'yes' or 'no'.");
+                    state.diagnosticData = { step: "task_manager" };
+                }
+                else if (state.subCategory === "printer") {
+                    botSend("🖨️ **Printer Issue Diagnosis**\n\n**Step 1:** Is the printer powered ON and connected via USB or WiFi?\n👉 Reply 'yes' or 'no'.");
+                    state.diagnosticData = { step: "printer_power" };
+                }
+                else if (state.subCategory === "battery") {
+                    botSend("🔋 **Battery Not Charging**\n\n**Step 1:** Is the charger firmly connected to both laptop and power outlet?\n👉 Reply 'yes' or 'no'.");
+                    state.diagnosticData = { step: "charger_connected" };
+                }
+                else {
+                    botSend("I need more details about your hardware issue. Please describe specifically (e.g., 'keyboard not working', 'mouse not moving').");
+                    state.step = "initial";
+                }
+            }
+            else if (state.category === "software") {
+                botSend("💻 **Software Issue Diagnosis**\n\n**Step 1:** Which software/app is causing trouble? (e.g., Outlook, Chrome, Excel, etc.)\n👉 Please tell me the name.");
+                state.diagnosticData = { step: "app_name" };
+            }
+            else if (state.category === "user-support") {
+                botSend("👤 **User Access Support**\n\n**Step 1:** Are you unable to log in to your system or an application?\n👉 Reply 'system' or 'application'.");
+                state.diagnosticData = { step: "access_type" };
+            }
+            else {
+                botSend("I couldn't recognize the issue. Please be specific:\n- 'Internet not working'\n- 'Laptop is slow'\n- 'Printer offline'\n- 'Software crashing'\n- 'Password reset'");
+                state.step = "initial";
+            }
+            return;
+        }
+
+        // ----- NETWORK DIAGNOSTIC FLOW -----
+        if (state.category === "network") {
+            const step = state.diagnosticData.step;
+            if (step === "ping_test") {
+                if (msg.includes("yes") || msg.includes("reply") || msg.includes("success")) {
+                    botSend("✅ Good! Ping to 8.8.8.8 works. That means your internet connection is active.\n\n**Step 2:** Now check if the issue is **slow internet** or **no internet on specific websites**?\n👉 Reply 'slow' or 'specific'.");
+                    state.diagnosticData.step = "speed_or_specific";
+                } 
+                else if (msg.includes("no") || msg.includes("timeout") || msg.includes("unreachable")) {
+                    botSend("❌ Ping failed. This indicates no network connectivity.\n\n**Step 2:** Check physical connections:\n- Is the Ethernet cable plugged in? (for wired)\n- Is WiFi turned on? (for wireless)\n- Try restarting your router/modem (unplug 30 seconds).\n\nAfter checking, reply 'done' to continue.");
+                    state.diagnosticData.step = "physical_check";
+                }
+                else {
+                    botSend("Please reply 'yes' if ping worked, or 'no' if it failed.");
+                }
+            }
+            else if (step === "speed_or_specific") {
+                if (msg.includes("slow")) {
+                    botSend("🐢 **Slow Internet Diagnosis:**\n\n**Step 3:** Run a speed test at speedtest.net.\n- If download speed is less than 5 Mbps, contact ISP.\n- If speed is good but browsing slow, try changing DNS to 8.8.8.8.\n- Clear browser cache.\n\n👉 Has this resolved your issue? Reply 'yes' or 'no'.");
+                    state.diagnosticData.step = "slow_resolved";
+                } 
+                else if (msg.includes("specific")) {
+                    botSend("🌐 **Specific website not working?**\n\n**Step 3:** Try accessing the site from another device or browser. Also try clearing DNS cache:\n- Open CMD as admin → `ipconfig /flushdns`\n- Then `netsh winsock reset`\n- Restart PC.\n\n👉 Reply 'done' after trying.");
+                    state.diagnosticData.step = "specific_done";
+                }
+                else {
+                    botSend("Please reply 'slow' or 'specific'.");
+                }
+            }
+            else if (step === "physical_check") {
+                if (msg.includes("done")) {
+                    botSend("Now test ping again: Open CMD, type `ping 8.8.8.8`. Does it work now? Reply 'yes' or 'no'.");
+                    state.diagnosticData.step = "ping_retest";
+                } else {
+                    botSend("Please reply 'done' after checking cables and restarting router.");
+                }
+            }
+            else if (step === "ping_retest") {
+                if (msg.includes("yes")) {
+                    botSend("🎉 Great! Your internet is back online. Issue resolved. If you need further help, describe another problem.");
+                    resetConversation();
+                } else {
+                    botSend("Still no ping. Please contact IT support desk for physical layer troubleshooting (network card, cable, switch port).");
+                    resetConversation();
+                }
+            }
+            else if (step === "slow_resolved") {
+                if (msg.includes("yes")) {
+                    botSend("Awesome! Glad it's fixed. Let me know if anything else.");
+                    resetConversation();
+                } else {
+                    botSend("Please run Windows Network Troubleshooter: Settings → Network & Internet → Advanced → Network Reset. Then restart PC.");
+                    resetConversation();
+                }
+            }
+            else if (step === "specific_done") {
+                botSend("If the issue persists, check if the website is down globally (isitdownrightnow.com). Otherwise, contact your network admin.");
+                resetConversation();
+            }
+        }
+
+        // ----- HARDWARE DIAGNOSTIC FLOW -----
+        else if (state.category === "hardware") {
+            const step = state.diagnosticData.step;
+            if (state.subCategory === "slow-performance") {
+                if (step === "task_manager") {
+                    if (msg.includes("yes")) {
+                        botSend("🔍 Which process is using high resources? (e.g., Chrome, Antivirus, System). Reply with the process name.");
+                        state.diagnosticData.step = "high_resource_process";
+                    } else {
+                        botSend("OK, no single app is hogging resources. Next: Check disk health.\n- Open CMD as admin → `wmic diskdrive get status`\n- If status is 'OK', then run Disk Cleanup.\n\n👉 Reply 'done' after cleanup.");
+                        state.diagnosticData.step = "disk_cleanup";
+                    }
+                }
+                else if (step === "high_resource_process") {
+                    botSend(`Process "${msg}" using high resources. Try:\n- Update the software.\n- Reinstall it.\n- Scan for malware.\n- Disable startup for that app.\n\nAfter trying, reply 'fixed' or 'not fixed'.`);
+                    state.diagnosticData.step = "resource_fixed";
+                }
+                else if (step === "resource_fixed") {
+                    if (msg.includes("fixed")) {
+                        botSend("Great! Performance should improve. Restart PC once.");
+                        resetConversation();
+                    } else {
+                        botSend("Consider upgrading RAM or switching to SSD. Contact IT for hardware upgrade.");
+                        resetConversation();
+                    }
+                }
+                else if (step === "disk_cleanup") {
+                    botSend("If still slow, run `sfc /scannow` in CMD admin to repair system files. Reply 'done' when finished.");
+                    state.diagnosticData.step = "sfc_scan";
+                }
+                else if (step === "sfc_scan") {
+                    botSend("If no improvement, backup data and consider resetting Windows (Keep files). Reply 'reset' to proceed or 'cancel'.");
+                    state.diagnosticData.step = "reset_decision";
+                }
+                else if (step === "reset_decision") {
+                    if (msg.includes("reset")) {
+                        botSend("Please go to Settings → Update & Security → Recovery → Reset this PC (Keep my files).");
+                        resetConversation();
+                    } else {
+                        botSend("OK. You may need IT assistance for hardware diagnosis.");
+                        resetConversation();
+                    }
+                }
+            }
+            else if (state.subCategory === "printer") {
+                if (step === "printer_power") {
+                    if (msg.includes("yes")) {
+                        botSend("**Step 2:** Clear print queue.\n- Windows: Control Panel → Devices & Printers → Open queue → Cancel all documents.\n- Restart Print Spooler (services.msc → Print Spooler → Restart).\n\n👉 Reply 'done' after trying.");
+                        state.diagnosticData.step = "printer_queue";
+                    } else {
+                        botSend("Please turn on the printer and connect it properly. Then reply 'ready'.");
+                        state.diagnosticData.step = "printer_power_on";
+                    }
+                }
+                else if (step === "printer_power_on") {
+                    if (msg.includes("ready")) {
+                        botSend("Now try printing a test page. Does it work? Reply 'yes' or 'no'.");
+                        state.diagnosticData.step = "printer_test";
+                    } else {
+                        botSend("Please turn on printer and reply 'ready'.");
+                    }
+                }
+                else if (step === "printer_queue") {
+                    botSend("Try printing a test page. Does it work? Reply 'yes' or 'no'.");
+                    state.diagnosticData.step = "printer_test";
+                }
+                else if (step === "printer_test") {
+                    if (msg.includes("yes")) {
+                        botSend("Printer is working now! Issue resolved.");
+                        resetConversation();
+                    } else {
+                        botSend("Reinstall printer driver: Download from manufacturer's website. Or check USB/WiFi connection. Contact IT if still not working.");
+                        resetConversation();
+                    }
+                }
+            }
+            else if (state.subCategory === "battery") {
+                if (step === "charger_connected") {
+                    if (msg.includes("yes")) {
+                        botSend("**Step 2:** Remove battery (if removable), press power button 30 seconds, reinsert battery, connect charger. Reply 'done'.");
+                        state.diagnosticData.step = "battery_reset";
+                    } else {
+                        botSend("Connect charger properly and reply 'done'.");
+                        state.diagnosticData.step = "charger_connect_retry";
+                    }
+                }
+                else if (step === "charger_connect_retry") {
+                    if (msg.includes("done")) {
+                        botSend("Now does the battery icon show charging? Reply 'yes' or 'no'.");
+                        state.diagnosticData.step = "battery_charging_check";
+                    }
+                }
+                else if (step === "battery_reset") {
+                    botSend("Is the battery charging now? Reply 'yes' or 'no'.");
+                    state.diagnosticData.step = "battery_charging_check";
+                }
+                else if (step === "battery_charging_check") {
+                    if (msg.includes("yes")) {
+                        botSend("Battery is charging. Issue resolved.");
+                        resetConversation();
+                    } else {
+                        botSend("Update battery drivers: Device Manager → Batteries → Uninstall 'Microsoft ACPI-Compliant Control Method Battery' → Restart PC. If still not charging, replace battery or charger.");
+                        resetConversation();
+                    }
+                }
+            }
+            else {
+                botSend("I need more details. Please describe your hardware issue clearly.");
+                resetConversation();
+            }
+        }
+
+        // ----- SOFTWARE DIAGNOSTIC FLOW -----
+        else if (state.category === "software") {
+            const step = state.diagnosticData.step;
+            if (step === "app_name") {
+                state.diagnosticData.appName = msg;
+                botSend(`**Troubleshooting ${msg}**\n\n**Step 2:** Try these common fixes:\n1️⃣ Restart the application.\n2️⃣ Update the software to latest version.\n3️⃣ Run as Administrator.\n4️⃣ Clear cache/temp files.\n\n👉 After trying, reply 'fixed' or 'not fixed'.`);
+                state.diagnosticData.step = "app_fix_tried";
+            }
+            else if (step === "app_fix_tried") {
+                if (msg.includes("fixed")) {
+                    botSend("Great! Software is working now.");
+                    resetConversation();
+                } else {
+                    botSend(`For ${state.diagnosticData.appName}, try reinstalling it. Also run Windows Updates. If it's Outlook/Office, use Microsoft SaRA tool. Reply 'done' after reinstall.`);
+                    state.diagnosticData.step = "reinstall_done";
+                }
+            }
+            else if (step === "reinstall_done") {
+                botSend("If issue persists, check for malware or corrupted user profile. Contact IT for advanced support.");
+                resetConversation();
+            }
+        }
+
+        // ----- USER SUPPORT FLOW -----
+        else if (state.category === "user-support") {
+            const step = state.diagnosticData.step;
+            if (step === "access_type") {
+                if (msg.includes("system")) {
+                    botSend("For Windows login issues:\n- Check Caps Lock.\n- Try resetting password via 'Forgot password'.\n- Domain user? Contact IT admin.\n\nReply 'resolved' or 'need help'.");
+                    state.diagnosticData.step = "login_resolved";
+                } else if (msg.includes("application")) {
+                    botSend("For application access:\n- Reset password via 'Forgot password'.\n- Check if account is locked.\n- Contact application support.\n\nReply 'resolved' or 'need help'.");
+                    state.diagnosticData.step = "app_access_resolved";
+                } else {
+                    botSend("Reply 'system' or 'application'.");
+                }
+            }
+            else if (step === "login_resolved" || step === "app_access_resolved") {
+                if (msg.includes("resolved")) {
+                    botSend("Excellent! Access restored.");
+                    resetConversation();
+                } else {
+                    botSend("Please raise a ticket with IT helpdesk for password reset or account unlock.");
+                    resetConversation();
+                }
+            }
+        }
+
+        // Fallback: reset if something goes wrong
+        else {
+            botSend("Let's start over. Please describe your issue again.");
+            resetConversation();
+        }
+    }
+
+    function resetConversation() {
+        state = {
+            step: "initial",
+            category: null,
+            subCategory: null,
+            diagnosticData: {}
+        };
+        // Optionally clear chat and add fresh welcome
+        messagesDiv.innerHTML = '';
+        const welcomeDiv = document.createElement('div');
+        welcomeDiv.className = 'message bot-message';
+        welcomeDiv.innerHTML = `<div class="bubble"><strong>🔧 Session reset.</strong><br><br>Please describe your IT issue (e.g., 'Internet not working', 'Laptop slow', 'Printer offline', 'Software crash').</div><div class="timestamp">Just now</div>`;
+        messagesDiv.appendChild(welcomeDiv);
+    }
+
+    // User input handler
+    function handleUserInput() {
         let userMsg = userInput.value.trim();
         if (!userMsg) return;
         userInput.value = '';
         addMessage(userMsg, true);
-        showTyping();
-        setTimeout(() => {
-            const reply = getBotResponse(userMsg);
-            hideTyping();
-            addMessage(reply, false);
-        }, 700);
+        processDiagnostic(userMsg);
     }
 
-    sendBtn.addEventListener('click', sendMessage);
+    sendBtn.addEventListener('click', handleUserInput);
     userInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMessage();
+        if (e.key === 'Enter') handleUserInput();
     });
-
-    document.querySelectorAll('.quick-chip').forEach(chip => {
-        chip.addEventListener('click', () => {
-            const preMsg = chip.getAttribute('data-msg');
-            userInput.value = preMsg;
-            sendMessage();
-        });
-    });
-
     clearBtn.addEventListener('click', () => {
-        messagesDiv.innerHTML = '';
-        const welcomeDiv = document.createElement('div');
-        welcomeDiv.className = 'message bot-message';
-        welcomeDiv.innerHTML = `<div class="bubble"><strong>🧹 Chat cleared. Tkxel NOC is still ready to help!</strong><br><br>Ask me about Windows, Mac, Linux, network, printers, or hardware.</div><div class="timestamp">Just now</div>`;
-        messagesDiv.appendChild(welcomeDiv);
+        resetConversation();
     });
-
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
 </script>
 </body>
 </html>
